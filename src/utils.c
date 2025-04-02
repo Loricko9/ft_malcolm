@@ -1,25 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_malcolm.c                                       :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/02 14:27:54 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/04/02 17:34:56 by lle-saul         ###   ########.fr       */
+/*   Created: 2025/04/02 17:19:53 by lle-saul          #+#    #+#             */
+/*   Updated: 2025/04/02 17:34:51 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malcolm.h"
 
-int	main(int ac, char **av)
+void	*ft_memset(void *ptr, int nb, size_t len)
 {
-	t_info	info;
-	
-	if (ac != 5) {
-		printf("use : ft_malcolm <source_ip> <source_MAC> <target_ip> <target_MAC>\n");
-		return (1);
+	size_t	i;
+
+	if (!ptr)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		((unsigned char *)ptr)[i] = nb;
+		i++;
 	}
-	if (check_ip(&info, av[1], av[3]))
-		return (1);
+	return (ptr);
+}
+
+void	*ft_memcpy(void *dest, void *src, size_t len)
+{
+	size_t	i;
+
+	if (!dest || !src)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		((unsigned char *)dest)[i] = ((unsigned char *)src)[i];
+		i++;
+	}
+	return (dest);
 }
