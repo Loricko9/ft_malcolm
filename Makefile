@@ -1,4 +1,4 @@
-FILES 	=	ft_malcolm.c check.c utils.c
+FILES 	=	ft_malcolm.c check.c utils.c math.c
 
 NAME	=	ft_malcolm
 CC		=	cc

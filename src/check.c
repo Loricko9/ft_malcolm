@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 15:32:46 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/04/02 17:53:32 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/04/03 18:07:50 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,5 +43,35 @@ bool	check_ip(t_info *info, char *src_arg, char *dest_arg)
 	if (inet_pton(AF_INET, dest_arg, &info->dest_ip.sin_addr) <= 0)
 		if (convert_hostname(&info->dest_ip, dest_arg))
 			return (true);
+	return (false);
+}
+
+bool	print_errmac(char *arg)
+{
+	fprintf(stderr, "ft_malcolm: invalid mac address: (%s)\n", arg);
+	return (true);
+}
+
+bool	check_mac(t_info *info, char *src_arg, char *dest_arg)
+{
+	if (ft_strlen(src_arg) != 17)
+		return (print_errmac(src_arg));
+	if (ft_strlen(dest_arg) != 17)
+		return (print_errmac(dest_arg));
+	for (int i = 0; i < 6; i++) {
+		if (!ft_ishex(src_arg[i * 3]) || !ft_ishex(src_arg[i * 3 + 1])
+			|| (src_arg[i * 3 + 2] != ':' && i < 5))
+		{
+			printf("i : %d\n", i);
+			return (print_errmac(src_arg));
+		}
+		info->src_mac[i] = (unsigned char)ft_strtol(src_arg + (i * 3), 2);
+	}
+	for (int i = 0; i < 6; i++) {
+		if (!ft_ishex(dest_arg[i * 3]) || !ft_ishex(dest_arg[i * 3 + 1])
+			|| (dest_arg[i * 3 + 2] != ':' && i < 5))
+			return (print_errmac(dest_arg));
+		info->dest_mac[i] = (unsigned char)ft_strtol(dest_arg + (i * 3), 2);
+	}
 	return (false);
 }
