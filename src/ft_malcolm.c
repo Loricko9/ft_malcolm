@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:27:54 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/04/04 18:31:31 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:23:19 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 int	g_socket;
 
-bool	process_pkg(char *buff, t_info *info)
+/*arp_sha => sender MAC | arp_spa => sender ip*/
+bool	process_pkg(char *buff, t_info *info, struct sockaddr_ll *recv_addr)
 {
 	struct ethhdr		*eth = (struct ethhdr *)buff;
 	struct ether_arp	*arp = (struct ether_arp *)(buff + sizeof(struct ethhdr));
@@ -25,8 +26,22 @@ bool	process_pkg(char *buff, t_info *info)
 	
 	printf("Packet received from %s\n", sender_ip);
 	if (!compare_mac((unsigned char *)arp->arp_sha, info->target_mac, info->target_mac_len) || !compare_ip(arp->arp_spa, &info->target_ip.sin_addr))
-		return (printf("ok !!\n"), false);
+		return (printf("err\n"), false);
 	
+	char network_name[IFNAMSIZ];
+	if_indextoname(recv_addr->sll_ifindex, network_name);
+	printf("Found available interface: %s\n", network_name);
+	printf("An ARP request has been broadcast.\n");
+	printf("\tmac address of request: %d:%d:%d:%d:%d:%d\n", arp->arp_sha[0], arp->arp_sha[1], arp->arp_sha[2], arp->arp_sha[3], arp->arp_sha[4], arp->arp_sha[5]);
+	printf("\tIP address of request: %s\n", sender_ip);
+
+	char	*packet_send = create_send_pkg(info, arp);
+	if (!packet_send)
+		return (printf("Error creating packet\n"), false);
+	send_pkg(packet_send, arp, recv_addr->sll_ifindex);
+	
+	free(packet_send);
+	printf("Exiting program...\n");
 	return (true);
 }
 
@@ -50,11 +65,11 @@ int	main(int ac, char **av)
 	
 	while (1)
 	{
-		struct sockaddr	recv_addr;
+		struct sockaddr_ll	recv_addr;
 		socklen_t		recv_addr_len = sizeof(recv_addr);
 		char			buff[BUFFER_SIZE];
 		
-		int	byte_recv = recvfrom(g_socket, buff, BUFFER_SIZE, 0, &recv_addr, &recv_addr_len);
+		int	byte_recv = recvfrom(g_socket, buff, BUFFER_SIZE, 0, (struct sockaddr *)&recv_addr, &recv_addr_len);
 		if (byte_recv < 0) {
 			if (errno == EBADF)
 				printf("\nProgram stopped, Good Bye !\n");
@@ -63,7 +78,7 @@ int	main(int ac, char **av)
 			break;
 		}
 		
-		if (process_pkg(buff, &info))
+		if (process_pkg(buff, &info, &recv_addr))
 			break;
 	}
 	close(g_socket);

@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:12:26 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/04/04 18:31:59 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:24:23 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <stdbool.h>
 # include <unistd.h>
+# include <stdlib.h>
 # include <stdio.h>
 # include <netdb.h>
 # include <errno.h>
@@ -23,8 +24,11 @@
 # include <arpa/inet.h>
 # include <sys/socket.h>
 # include <sys/types.h>
+# include <net/if.h>
+# include <net/ethernet.h>
 # include <netinet/in.h>
 # include <netinet/if_ether.h>
+# include <netpacket/packet.h>
 
 #define BUFFER_SIZE 65536
 
@@ -56,6 +60,10 @@ bool	compare_ip(void *ip1, void *ip2);
 /*math.c*/
 bool			ft_ishex(char c);
 unsigned int	ft_strtol(char *str, int len);
+
+/*response.c*/
+char	*create_send_pkg(t_info *info, struct ether_arp *arp);
+void	send_pkg(char *send_pkg, struct ether_arp *arp, int eth_index);
 
 #endif
 
