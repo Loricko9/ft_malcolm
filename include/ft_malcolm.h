@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:12:26 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/04/08 19:24:23 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/05/02 18:17:43 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,12 @@
 # include <arpa/inet.h>
 # include <sys/socket.h>
 # include <sys/types.h>
+# include <sys/ioctl.h>
 # include <net/if.h>
 # include <net/ethernet.h>
 # include <netinet/in.h>
 # include <netinet/if_ether.h>
+# include <netinet/ether.h>
 # include <netpacket/packet.h>
 
 #define BUFFER_SIZE 65536
@@ -56,6 +58,7 @@ int		ft_strlen(char *str);
 bool	handle_signal(void);
 bool	compare_mac(unsigned char *mac1, unsigned char *mac2, size_t len);
 bool	compare_ip(void *ip1, void *ip2);
+bool	get_inter(char *name, struct ifreq *ifr);
 
 /*math.c*/
 bool			ft_ishex(char c);

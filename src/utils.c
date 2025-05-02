@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 17:19:53 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/04/04 18:38:04 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/05/02 18:45:52 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,24 @@ bool	compare_ip(void *ip1, void *ip2)
 {
 	if (ft_memcmp(ip1, ip2, 4))
 		return (true);
+	return (false);
+}
+
+bool	get_inter(char *name, struct ifreq *ifr)
+{
+	if (name && ft_strlen(name) > IFNAMSIZ)
+		return (printf("ft_malcolm: interface name too long\n"), true);
+	ft_memset(ifr, 0, sizeof(struct ifreq));
+	if (name)
+		strncpy(ifr->ifr_name, name, IFNAMSIZ);
+	else
+		strncpy(ifr->ifr_name, "eth0", IFNAMSIZ);
+	if (ioctl(g_socket, SIOCGIFINDEX, ifr) < 0)
+		return (printf("ft_malcolm: error interface : %s\n", strerror(errno)), true);
+	
+	char network_name[IFNAMSIZ];
+	if_indextoname(ifr->ifr_ifindex, network_name);
+	printf("Found available interface: %s\n", network_name);
+	
 	return (false);
 }
