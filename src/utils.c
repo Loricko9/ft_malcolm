@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 17:19:53 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/05/02 18:45:52 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/05/03 18:12:19 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,12 @@ bool	get_inter(char *name, struct ifreq *ifr)
 	char network_name[IFNAMSIZ];
 	if_indextoname(ifr->ifr_ifindex, network_name);
 	printf("Found available interface: %s\n", network_name);
+
+	struct packet_mreq mreq;
+	ft_memset(&mreq, 0, sizeof(mreq));
+	mreq.mr_ifindex = ifr->ifr_ifindex;
+	mreq.mr_type = PACKET_MR_PROMISC;
+	setsockopt(g_socket, SOL_PACKET, PACKET_ADD_MEMBERSHIP, &mreq, sizeof(mreq));
 	
 	return (false);
 }

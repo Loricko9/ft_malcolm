@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:27:54 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/05/02 18:41:00 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/05/03 18:21:53 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,13 @@ bool	process_pkg(char *buff, t_info *info, struct sockaddr_ll *recv_addr)
 	
 	char	sender_ip[INET_ADDRSTRLEN];
 	inet_ntop(AF_INET, arp->arp_spa, sender_ip, sizeof(sender_ip));
+	
+	if (ntohs(arp->ea_hdr.ar_op) == ARPOP_REQUEST)
+		printf("ARP request\n");
+	else if (ntohs(arp->ea_hdr.ar_op) == ARPOP_REPLY)
+		printf("ARP reply\n");
+	else
+		printf("Unknown ARP operation\n");
 	
 	printf("Packet received from %s\n", sender_ip);
 	if (!compare_mac((unsigned char *)arp->arp_sha, info->target_mac, info->target_mac_len) || !compare_ip(arp->arp_spa, &info->target_ip.sin_addr))
