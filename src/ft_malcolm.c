@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:27:54 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/05/09 11:36:49 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/05/09 11:49:49 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ bool	process_pkg(char *buff, t_info *info, struct sockaddr_ll *recv_addr, char *
 	inet_ntop(AF_INET, arp->arp_spa, sender_ip, sizeof(sender_ip));
 	
 	printf("Packet received from %s\n", sender_ip);
-	if (!compare_mac((unsigned char *)arp->arp_sha, info->target_mac, info->target_mac_len)*/ || !compare_ip(arp->arp_spa, &info->target_ip.sin_addr))
+	if (!compare_mac((unsigned char *)arp->arp_sha, info->target_mac, info->target_mac_len) || !compare_ip(arp->arp_spa, &info->target_ip.sin_addr))
 		return (false);
 	
 	printf("An ARP request has been broadcast.\n");
