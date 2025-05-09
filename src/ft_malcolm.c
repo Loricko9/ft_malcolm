@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:27:54 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/05/03 18:21:53 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/05/09 11:36:49 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	g_socket;
 
 /*arp_sha => sender MAC | arp_spa => sender ip*/
-bool	process_pkg(char *buff, t_info *info, struct sockaddr_ll *recv_addr)
+bool	process_pkg(char *buff, t_info *info, struct sockaddr_ll *recv_addr, char *packet_send)
 {
 	struct ethhdr		*eth = (struct ethhdr *)buff;
 	struct ether_arp	*arp = (struct ether_arp *)(buff + sizeof(struct ethhdr));
@@ -24,24 +24,14 @@ bool	process_pkg(char *buff, t_info *info, struct sockaddr_ll *recv_addr)
 	char	sender_ip[INET_ADDRSTRLEN];
 	inet_ntop(AF_INET, arp->arp_spa, sender_ip, sizeof(sender_ip));
 	
-	if (ntohs(arp->ea_hdr.ar_op) == ARPOP_REQUEST)
-		printf("ARP request\n");
-	else if (ntohs(arp->ea_hdr.ar_op) == ARPOP_REPLY)
-		printf("ARP reply\n");
-	else
-		printf("Unknown ARP operation\n");
-	
 	printf("Packet received from %s\n", sender_ip);
-	if (!compare_mac((unsigned char *)arp->arp_sha, info->target_mac, info->target_mac_len) || !compare_ip(arp->arp_spa, &info->target_ip.sin_addr))
-		return (printf("err\n"), false);
+	if (!compare_mac((unsigned char *)arp->arp_sha, info->target_mac, info->target_mac_len)*/ || !compare_ip(arp->arp_spa, &info->target_ip.sin_addr))
+		return (false);
 	
 	printf("An ARP request has been broadcast.\n");
 	printf("\tmac address of request: %d:%d:%d:%d:%d:%d\n", arp->arp_sha[0], arp->arp_sha[1], arp->arp_sha[2], arp->arp_sha[3], arp->arp_sha[4], arp->arp_sha[5]);
 	printf("\tIP address of request: %s\n", sender_ip);
 
-	char	*packet_send = create_send_pkg(info, arp);
-	if (!packet_send)
-		return (printf("Error creating packet\n"), false);
 	send_pkg(packet_send, arp, recv_addr->sll_ifindex);
 	
 	free(packet_send);
@@ -70,7 +60,11 @@ int	main(int ac, char **av)
 	struct ifreq	ifr;
 	if (get_inter(av[5], &ifr))
 		return (close(g_socket), 1);
-		
+	
+	char	*packet_send = create_send_pkg(&info);
+	if (!packet_send)
+		return (printf("Error creating packet\n"), 1);
+	
 	while (1)
 	{
 		struct sockaddr_ll	recv_addr;
@@ -91,7 +85,7 @@ int	main(int ac, char **av)
 			break;
 		}
 		
-		if (process_pkg(buff, &info, &recv_addr))
+		if (process_pkg(buff, &info, &recv_addr, packet_send))
 			break;
 	}
 	close(g_socket);

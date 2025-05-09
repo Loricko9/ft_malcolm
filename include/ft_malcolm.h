@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:12:26 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/05/02 18:17:43 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/05/09 11:12:28 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ bool			ft_ishex(char c);
 unsigned int	ft_strtol(char *str, int len);
 
 /*response.c*/
-char	*create_send_pkg(t_info *info, struct ether_arp *arp);
+char	*create_send_pkg(t_info *info);
 void	send_pkg(char *send_pkg, struct ether_arp *arp, int eth_index);
 
 #endif

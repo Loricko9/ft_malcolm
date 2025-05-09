@@ -6,13 +6,13 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 12:12:33 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/04/08 19:24:17 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/05/09 11:10:42 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malcolm.h"
 
-char	*create_send_pkg(t_info *info, struct ether_arp *arp)
+char	*create_send_pkg(t_info *info)
 {
 	char	*packet;
 
@@ -20,7 +20,7 @@ char	*create_send_pkg(t_info *info, struct ether_arp *arp)
 	if (!packet)
 		return (NULL);
 	/* ------ Ethernet Header ------ */
-	ft_memcpy(packet, arp->arp_sha, 6);
+	ft_memcpy(packet, info->target_mac, 6);
 	ft_memcpy(packet + 6, info->src_mac, 6);
 	packet[12] = 0x08;
 	packet[13] = 0x06;
@@ -41,8 +41,8 @@ char	*create_send_pkg(t_info *info, struct ether_arp *arp)
 
 	ft_memcpy(packet + 22, info->src_mac, 6);
 	ft_memcpy(packet + 28, &info->src_ip.sin_addr, 4);
-	ft_memcpy(packet + 32, arp->arp_sha, 6);
-	ft_memcpy(packet + 38, arp->arp_spa, 4);
+	ft_memcpy(packet + 32, info->target_mac, 6);
+	ft_memcpy(packet + 38, &info->target_ip.sin_addr, 4);
 	packet[42] = 0x00;
 	return (packet);
 }

@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 17:19:53 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/05/03 18:12:19 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/05/09 11:31:16 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,14 +89,14 @@ bool	compare_mac(unsigned char *mac1, unsigned char *mac2, size_t len)
 {
 	if (ft_memcmp(mac1, mac2, len))
 		return (true);
-	return (false);
+	return (printf("err Mac\n"), false);
 }
 
 bool	compare_ip(void *ip1, void *ip2)
 {
 	if (ft_memcmp(ip1, ip2, 4))
 		return (true);
-	return (false);
+	return (printf("err Ip\n"), false);
 }
 
 bool	get_inter(char *name, struct ifreq *ifr)
