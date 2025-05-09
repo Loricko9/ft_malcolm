@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 17:19:53 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/05/09 11:31:16 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/05/09 12:07:51 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,21 @@ bool	compare_ip(void *ip1, void *ip2)
 	return (printf("err Ip\n"), false);
 }
 
+bool	select_inter(struct ifreq *ifr)
+{
+	struct ifaddrs *ifaddr, *ifa;
+
+	if (getifaddrs(&ifaddr) == -1)
+		return (printf("ft_malcolm: error getifaddrs : %s\n", strerror(errno)), true);
+	ifa = ifaddr->ifa_next;
+	if (ifa == NULL)
+		return (printf("ft_malcolm: no interface found\n"), true);
+	
+	strncpy(ifr->ifr_name, ifa->ifa_name, IFNAMSIZ);
+	freeifaddrs(ifaddr);
+	return (false);
+}
+
 bool	get_inter(char *name, struct ifreq *ifr)
 {
 	if (name && ft_strlen(name) > IFNAMSIZ)
@@ -107,7 +122,8 @@ bool	get_inter(char *name, struct ifreq *ifr)
 	if (name)
 		strncpy(ifr->ifr_name, name, IFNAMSIZ);
 	else
-		strncpy(ifr->ifr_name, "eth0", IFNAMSIZ);
+		if (select_inter(ifr))
+			return (true);
 	if (ioctl(g_socket, SIOCGIFINDEX, ifr) < 0)
 		return (printf("ft_malcolm: error interface : %s\n", strerror(errno)), true);
 	

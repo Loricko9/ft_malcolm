@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:12:26 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/05/09 11:12:28 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/05/09 12:10:47 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <errno.h>
 # include <signal.h>
 # include <string.h>
+# include <ifaddrs.h>
 # include <arpa/inet.h>
 # include <sys/socket.h>
 # include <sys/types.h>
