@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:27:54 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/05/09 11:49:49 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/05/12 10:57:36 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	g_socket;
 
 /*arp_sha => sender MAC | arp_spa => sender ip*/
-bool	process_pkg(char *buff, t_info *info, struct sockaddr_ll *recv_addr, char *packet_send)
+bool	process_pkg(char *buff, t_info *info, struct sockaddr_ll *recv_addr)
 {
 	struct ethhdr		*eth = (struct ethhdr *)buff;
 	struct ether_arp	*arp = (struct ether_arp *)(buff + sizeof(struct ethhdr));
@@ -31,10 +31,9 @@ bool	process_pkg(char *buff, t_info *info, struct sockaddr_ll *recv_addr, char *
 	printf("An ARP request has been broadcast.\n");
 	printf("\tmac address of request: %d:%d:%d:%d:%d:%d\n", arp->arp_sha[0], arp->arp_sha[1], arp->arp_sha[2], arp->arp_sha[3], arp->arp_sha[4], arp->arp_sha[5]);
 	printf("\tIP address of request: %s\n", sender_ip);
-
-	send_pkg(packet_send, arp, recv_addr->sll_ifindex);
 	
-	free(packet_send);
+	send_pkg(create_send_pkg(info, *eth, *arp), recv_addr);
+	
 	printf("Exiting program...\n");
 	return (true);
 }
@@ -61,10 +60,6 @@ int	main(int ac, char **av)
 	if (get_inter(av[5], &ifr))
 		return (close(g_socket), 1);
 	
-	char	*packet_send = create_send_pkg(&info);
-	if (!packet_send)
-		return (printf("Error creating packet\n"), 1);
-	
 	while (1)
 	{
 		struct sockaddr_ll	recv_addr;
@@ -85,7 +80,7 @@ int	main(int ac, char **av)
 			break;
 		}
 		
-		if (process_pkg(buff, &info, &recv_addr, packet_send))
+		if (process_pkg(buff, &info, &recv_addr))
 			break;
 	}
 	close(g_socket);

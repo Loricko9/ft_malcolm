@@ -1,7 +1,7 @@
 FILES 	=	ft_malcolm.c check.c utils.c math.c response.c
 
 NAME	=	ft_malcolm
-CC		=	cc
+CC		=	gcc
 CFLAGS	+=	-W -Wall -Wextra -Werror
 RM		=	rm -rf
 INCLUDE	=	-I include/

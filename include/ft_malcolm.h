@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:12:26 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/05/09 12:10:47 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/05/12 10:58:46 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,18 @@ extern int	g_socket;
 typedef struct s_info
 {
 	struct sockaddr_in	src_ip;
-	unsigned char		src_mac[6];
+	unsigned char		src_mac[ETH_ALEN];
 	size_t 				src_mac_len;
 	struct sockaddr_in	target_ip;
-	unsigned char		target_mac[6];
+	unsigned char		target_mac[ETH_ALEN];
 	size_t 				target_mac_len;
 }	t_info;
+
+typedef struct s_packet
+{
+	struct ethhdr		eth;
+	struct ether_arp	arp;
+}	t_packet;
 
 /*check.c*/
 bool	check_ip(t_info *info, char *src_arg, char *dest_arg);
@@ -66,8 +72,8 @@ bool			ft_ishex(char c);
 unsigned int	ft_strtol(char *str, int len);
 
 /*response.c*/
-char	*create_send_pkg(t_info *info);
-void	send_pkg(char *send_pkg, struct ether_arp *arp, int eth_index);
+t_packet	create_send_pkg(t_info *info, struct ethhdr eth, struct ether_arp arp);
+void		send_pkg(t_packet packet, struct sockaddr_ll *recv_addr);
 
 #endif
 
