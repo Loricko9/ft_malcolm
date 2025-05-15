@@ -14,19 +14,19 @@
 
 int	g_socket;
 
-/*arp_sha => sender MAC | arp_spa => sender ip*/
+/*arp_sha => sender MAC | arp_spa => sender ip
+arp_tha => target Mac | arp_tpa => target ip*/
 bool	process_pkg(char *buff, t_info *info, struct sockaddr_ll *recv_addr)
 {
 	struct ethhdr		*eth = (struct ethhdr *)buff;
 	struct ether_arp	*arp = (struct ether_arp *)(buff + sizeof(struct ethhdr));
 	(void)eth;
 	
+	if (!compare_mac((unsigned char *)arp->arp_sha, info->target_mac, info->target_mac_len) || !compare_ip(arp->arp_spa, &info->target_ip.sin_addr))
+	return (false);
+
 	char	sender_ip[INET_ADDRSTRLEN];
 	inet_ntop(AF_INET, arp->arp_spa, sender_ip, sizeof(sender_ip));
-	
-	printf("Packet received from %s\n", sender_ip);
-	if (!compare_mac((unsigned char *)arp->arp_sha, info->target_mac, info->target_mac_len) || !compare_ip(arp->arp_spa, &info->target_ip.sin_addr))
-		return (false);
 	
 	printf("An ARP request has been broadcast.\n");
 	printf("\tmac address of request: %d:%d:%d:%d:%d:%d\n", arp->arp_sha[0], arp->arp_sha[1], arp->arp_sha[2], arp->arp_sha[3], arp->arp_sha[4], arp->arp_sha[5]);
@@ -53,8 +53,6 @@ int	main(int ac, char **av)
 		fprintf(stderr, "Error socket creation : %s\n", strerror(errno));
 		return (1);
 	}
-	printf("address mac src : %d:%d:%d:%d:%d:%d\n", info.src_mac[0], info.src_mac[1], info.src_mac[2], info.src_mac[3], info.src_mac[4], info.src_mac[5]);
-	printf("address mac dest : %d:%d:%d:%d:%d:%d\n", info.target_mac[0], info.target_mac[1], info.target_mac[2], info.target_mac[3], info.target_mac[4], info.target_mac[5]);
 	
 	struct ifreq	ifr;
 	if (get_inter(av[5], &ifr))
