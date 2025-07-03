@@ -44,6 +44,7 @@ t_packet	create_send_pkg(t_info *info, struct ethhdr eth, struct ether_arp arp)
 
 void	send_pkg(t_packet packet, struct sockaddr_ll *recv_addr)
 {
+	print_pkg(&packet.arp);
 	printf("Now sending an ARP reply to the target address with spoofed source, please wait...\n");
 
 	if (sendto(g_socket, &packet, sizeof(t_packet), 0, (struct sockaddr *)recv_addr, sizeof(struct sockaddr_ll)) < 0) {
@@ -52,4 +53,3 @@ void	send_pkg(t_packet packet, struct sockaddr_ll *recv_addr)
 	}
 	printf("Sent an ARP reply packet, you may now check the arp table on the target.\n");
 }
-  

@@ -29,8 +29,9 @@ bool	process_pkg(char *buff, t_info *info, struct sockaddr_ll *recv_addr)
 	inet_ntop(AF_INET, arp->arp_spa, sender_ip, sizeof(sender_ip));
 	
 	printf("An ARP request has been broadcast.\n");
-	printf("\tmac address of request: %d:%d:%d:%d:%d:%d\n", arp->arp_sha[0], arp->arp_sha[1], arp->arp_sha[2], arp->arp_sha[3], arp->arp_sha[4], arp->arp_sha[5]);
-	printf("\tIP address of request: %s\n", sender_ip);
+	printf("\tmac address of request: ");
+	print_mac(arp->arp_sha);
+	printf("\n\tIP address of request: %s\n", sender_ip);
 	
 	send_pkg(create_send_pkg(info, *eth, *arp), recv_addr);
 	
@@ -42,11 +43,13 @@ int	main(int ac, char **av)
 {
 	t_info	info;
 	
-	if (ac < 5 || ac > 6) {
-		printf("use : ft_malcolm <source_ip> <source_MAC> <target_ip> <target_MAC> [interface_name]\n");
+	if (ac < 5 || ac > 7) {
+		printf("use : ft_malcolm [-v] <source_ip> <source_MAC> <target_ip> <target_MAC> [interface_name]\n");
 		return (1);
 	}
-	if (check_ip(&info, av[1], av[3]) || check_mac(&info, av[2], av[4]) || handle_signal())
+	int	offset = check_flag(&info, av);
+	printf("res bool : %d\n", info.verbose_flag);
+	if (check_ip(&info, av[1 + offset], av[3 + offset]) || check_mac(&info, av[2 + offset], av[4 + offset]) || handle_signal())
 		return (1);
 	g_socket = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ARP));
 	if (g_socket < 0) {
@@ -55,7 +58,7 @@ int	main(int ac, char **av)
 	}
 	
 	struct ifreq	ifr;
-	if (get_inter(av[5], &ifr))
+	if (get_inter(av[5 + offset], &ifr))
 		return (close(g_socket), 1);
 	
 	while (1)

@@ -139,3 +139,44 @@ bool	get_inter(char *name, struct ifreq *ifr)
 	
 	return (false);
 }
+
+void	print_mac(uint8_t *mac)
+{
+	for(int i = 0; i < 6; i++) {
+		printf("%d", mac[i]);
+		if (i < 5)
+			printf(":");
+	}
+}
+
+void	print_pkg(struct ether_arp *arp)
+{
+	printf("----- VERBOSE MODE : PACKET SEND -----\n");
+	printf("ARP Packet send :\n");
+	
+	if (arp->ea_hdr.ar_pro == 0x0800)
+		printf("Format Protocol Address : IPv4\n");
+	else
+		printf("Format Protocol Address : other\n");
+	if (arp->ea_hdr.ar_hrd == ETH_P_IP)
+		printf("Format Hardware Address : ETHERNET\n");
+	else
+		printf("Format Hardware Address : Other\n");
+	if (arp->ea_hdr.ar_op == 1)
+		printf("ARP operation : REQUEST\n");
+	else
+		printf("ARP operation : REPLY\n");
+	
+	char	ip_src[INET_ADDRSTRLEN];
+	inet_ntop(AF_INET, arp->arp_spa, ip_src, sizeof(ip_src));
+	printf("Sender IP : %s\n", ip_src);
+	char	ip_target[INET_ADDRSTRLEN];
+	inet_ntop(AF_INET, arp->arp_tpa, ip_target, sizeof(ip_target));
+	printf("Target IP : %s\n", ip_target);
+	printf("Sender MAC : ");
+	print_mac(arp->arp_sha);
+	printf("\nTarget MAC : ");
+	print_mac(arp->arp_tha);
+
+	printf("\n-------------------------------------\n");
+}

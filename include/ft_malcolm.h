@@ -45,6 +45,7 @@ typedef struct s_info
 	struct sockaddr_in	target_ip;
 	unsigned char		target_mac[ETH_ALEN];
 	size_t 				target_mac_len;
+	bool				verbose_flag;
 }	t_info;
 
 typedef struct s_packet
@@ -56,6 +57,7 @@ typedef struct s_packet
 /*check.c*/
 bool	check_ip(t_info *info, char *src_arg, char *dest_arg);
 bool	check_mac(t_info *info, char *src_arg, char *dest_arg);
+int		check_flag(t_info *info, char **av);
 
 /*utils.c*/
 void	*ft_memset(void *ptr, int nb, size_t len);
@@ -66,6 +68,8 @@ bool	handle_signal(void);
 bool	compare_mac(unsigned char *mac1, unsigned char *mac2, size_t len);
 bool	compare_ip(void *ip1, void *ip2);
 bool	get_inter(char *name, struct ifreq *ifr);
+void	print_mac(uint8_t *mac);
+void	print_pkg(struct ether_arp *arp);
 
 /*math.c*/
 bool			ft_ishex(char c);

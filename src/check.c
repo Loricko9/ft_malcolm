@@ -92,3 +92,15 @@ bool	check_mac(t_info *info, char *src_arg, char *dest_arg)
 	}
 	return (false);
 }
+
+int	check_flag(t_info *info, char **av)
+{
+	info->verbose_flag = false;
+	if (ft_memcmp(av[1], "-v", 3)) {
+		info->verbose_flag = true;
+		return (1);
+	}
+	else if (ft_memcmp(av[6], "-v", 3) || ft_memcmp(av[5], "-v", 3))
+		info->verbose_flag = true;
+	return (0);
+}
