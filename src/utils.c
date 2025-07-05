@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 17:19:53 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/07/05 16:22:21 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/07/05 16:25:56 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ void	print_pkg(struct ether_arp *arp)
 		printf("Format Protocol Address : IPv6\n");
 	else
 		printf("Format Protocol Address : other\n");
-	if (ntohs(arp->ea_hdr.ar_hrd) == ETH_P_IP)
+	if (ntohs(arp->ea_hdr.ar_hrd) == ARPHRD_ETHER)
 		printf("Format Hardware Address : ETHERNET\n");
 	else
 		printf("Format Hardware Address : Other\n");
