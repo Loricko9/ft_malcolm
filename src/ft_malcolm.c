@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:27:54 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/05/12 10:57:36 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/07/05 15:01:34 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,10 @@ int	main(int ac, char **av)
 	
 	if (ac < 5 || ac > 7) {
 		printf("use : ft_malcolm [-v] <source_ip> <source_MAC> <target_ip> <target_MAC> [interface_name]\n");
+		return (1);
+	}
+	if (getuid() != 0) {
+		fprintf(stderr, "Error: this program must be run as root.\n");
 		return (1);
 	}
 	int	offset = check_flag(&info, av);
