@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 17:19:53 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/07/05 15:28:35 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/07/05 16:22:21 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ bool	get_inter(char *name, struct ifreq *ifr)
 void	print_mac(uint8_t *mac)
 {
 	for(int i = 0; i < 6; i++) {
-		printf("%d", mac[i]);
+		printf("%02x", mac[i]);
 		if (i < 5)
 			printf(":");
 	}
@@ -152,13 +152,14 @@ void	print_mac(uint8_t *mac)
 void	print_pkg(struct ether_arp *arp)
 {
 	printf("----- VERBOSE MODE : PACKET SEND -----\n");
-	printf("ARP Packet send :\n");
 	
-	if (arp->ea_hdr.ar_pro == 0x0800)
+	if (ntohs(arp->ea_hdr.ar_pro) == ETHERTYPE_IP)
 		printf("Format Protocol Address : IPv4\n");
+	else if (ntohs(arp->ea_hdr.ar_pro) == ETHERTYPE_IPV6)
+		printf("Format Protocol Address : IPv6\n");
 	else
 		printf("Format Protocol Address : other\n");
-	if (arp->ea_hdr.ar_hrd == ETH_P_IP)
+	if (ntohs(arp->ea_hdr.ar_hrd) == ETH_P_IP)
 		printf("Format Hardware Address : ETHERNET\n");
 	else
 		printf("Format Hardware Address : Other\n");
