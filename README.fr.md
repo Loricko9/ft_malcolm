@@ -1,6 +1,6 @@
 # Ft_malcolm
 
-[![fr](https://img.shields.io/badge/Langue-en-red)](README.en.md)
+[![en](https://img.shields.io/badge/Langue-en-red)](README.md)
 
 <!-- $$\color{darkgreen}{{\Huge \mathbf {125/100 ✅}}}$$ -->
 
