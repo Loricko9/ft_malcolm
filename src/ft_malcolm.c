@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:27:54 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/07/05 15:01:34 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/07/05 15:17:17 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ int	main(int ac, char **av)
 		return (1);
 	}
 	int	offset = check_flag(&info, av);
-	printf("res bool : %d\n", info.verbose_flag);
 	if (check_ip(&info, av[1 + offset], av[3 + offset]) || check_mac(&info, av[2 + offset], av[4 + offset]) || handle_signal())
 		return (1);
 	g_socket = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ARP));
