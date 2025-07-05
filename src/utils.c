@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 17:19:53 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/07/05 16:25:56 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/07/05 16:37:14 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@ void	print_pkg(struct ether_arp *arp)
 		printf("Format Hardware Address : ETHERNET\n");
 	else
 		printf("Format Hardware Address : Other\n");
-	if (arp->ea_hdr.ar_op == 1)
+	if (ntohs(arp->ea_hdr.ar_op) == ARPOP_REQUEST)
 		printf("ARP operation : REQUEST\n");
 	else
 		printf("ARP operation : REPLY\n");
