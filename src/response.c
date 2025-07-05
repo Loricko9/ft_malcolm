@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 12:12:33 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/05/12 13:12:11 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/07/05 15:47:06 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ t_packet	create_send_pkg(t_info *info, struct ethhdr eth, struct ether_arp arp)
   - target MAC = MAC du demandeur [arp_tha]
   - target IP = IP du demandeur [arp_tpa]*/
 
-void	send_pkg(t_packet packet, struct sockaddr_ll *recv_addr)
+void	send_pkg(t_packet packet, struct sockaddr_ll *recv_addr, bool verbose)
 {
-	print_pkg(&packet.arp);
+	if (verbose)
+		print_pkg(&packet.arp);
 	printf("Now sending an ARP reply to the target address with spoofed source, please wait...\n");
 
 	if (sendto(g_socket, &packet, sizeof(t_packet), 0, (struct sockaddr *)recv_addr, sizeof(struct sockaddr_ll)) < 0) {

@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:27:54 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/07/05 15:17:17 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/07/05 15:45:45 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool	process_pkg(char *buff, t_info *info, struct sockaddr_ll *recv_addr)
 	print_mac(arp->arp_sha);
 	printf("\n\tIP address of request: %s\n", sender_ip);
 	
-	send_pkg(create_send_pkg(info, *eth, *arp), recv_addr);
+	send_pkg(create_send_pkg(info, *eth, *arp), recv_addr, info->verbose_flag);
 	
 	printf("Exiting program...\n");
 	return (true);

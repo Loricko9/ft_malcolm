@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:12:26 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/05/12 10:58:46 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/07/05 15:46:14 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ unsigned int	ft_strtol(char *str, int len);
 
 /*response.c*/
 t_packet	create_send_pkg(t_info *info, struct ethhdr eth, struct ether_arp arp);
-void		send_pkg(t_packet packet, struct sockaddr_ll *recv_addr);
+void		send_pkg(t_packet packet, struct sockaddr_ll *recv_addr, bool verbose);
 
 #endif
 
