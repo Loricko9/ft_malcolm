@@ -6,7 +6,7 @@
 /*   By: lle-saul <lle-saul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 14:27:54 by lle-saul          #+#    #+#             */
-/*   Updated: 2025/07/05 15:45:45 by lle-saul         ###   ########.fr       */
+/*   Updated: 2025/09/12 09:39:48 by lle-saul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ bool	process_pkg(char *buff, t_info *info, struct sockaddr_ll *recv_addr)
 	(void)eth;
 	
 	if (!compare_mac((unsigned char *)arp->arp_sha, info->target_mac, info->target_mac_len) || !compare_ip(arp->arp_spa, &info->target_ip.sin_addr))
-	return (false);
+		return (false);
 
 	char	sender_ip[INET_ADDRSTRLEN];
 	inet_ntop(AF_INET, arp->arp_spa, sender_ip, sizeof(sender_ip));
